@@ -1,16 +1,16 @@
-module Data.ASTState exposing (ASTState, nextState, previousState)
+module Data.GenericASTState exposing (GenericASTState, nextState, previousState)
 
-import Data.AST exposing (AST)
+import Data.GenericAST exposing (GenericAST)
 
 
-type alias ASTState =
-    { current : AST
-    , prev : List AST
-    , next : List AST
+type alias GenericASTState =
+    { current : GenericAST
+    , prev : List GenericAST
+    , next : List GenericAST
     }
 
 
-nextState : ASTState -> ASTState
+nextState : GenericASTState -> GenericASTState
 nextState asts =
     case asts.next of
         ast :: rest ->
@@ -28,7 +28,7 @@ nextState asts =
             asts
 
 
-previousState : ASTState -> ASTState
+previousState : GenericASTState -> GenericASTState
 previousState asts =
     case asts.prev of
         ast :: rest ->

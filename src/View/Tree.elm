@@ -1,8 +1,7 @@
 module View.Tree exposing (drawTree)
 
-import Data.AST as AST exposing (AST, Children(..))
-import Html exposing (div, text)
-import Model
+import Data.GenericAST as GenericAST exposing (Children(..), GenericAST)
+import Html exposing (text)
 import Svg exposing (Svg, svg)
 import Svg.Attributes as Attrs exposing (..)
 
@@ -25,7 +24,7 @@ nodeColor =
     "#51578D"
 
 
-drawTree : AST -> Svg msg
+drawTree : GenericAST -> Svg msg
 drawTree ast =
     let
         startX =
@@ -38,11 +37,11 @@ drawTree ast =
         |> svg [ class "tree" ]
 
 
-drawSubTree : Int -> Int -> AST -> List (Svg msg)
+drawSubTree : Int -> Int -> GenericAST -> List (Svg msg)
 drawSubTree xMid y ast =
     let
         totalWidth =
-            AST.treeWidth ast
+            GenericAST.treeWidth ast
 
         newY =
             nextY y
@@ -51,13 +50,13 @@ drawSubTree xMid y ast =
             ast.children
 
         childrenWidths =
-            List.map AST.treeWidth children
+            List.map GenericAST.treeWidth children
 
         edges =
             drawEdges xMid y totalWidth childrenWidths
 
         drawnChildren =
-            makeChildren xMid newY totalWidth drawSubTree AST.treeWidth children
+            makeChildren xMid newY totalWidth drawSubTree GenericAST.treeWidth children
     in
     case children of
         [] ->
@@ -71,7 +70,7 @@ drawNode : Int -> Int -> String -> List (Svg msg) -> List (Svg msg)
 drawNode x y name children =
     let
         wRect =
-            AST.nodeWidth name + 10
+            GenericAST.nodeWidth name + 10
 
         hRect =
             30

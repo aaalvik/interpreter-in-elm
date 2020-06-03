@@ -1,6 +1,6 @@
 module View exposing (view)
 
-import Data.AST exposing (AST)
+import Data.GenericAST exposing (GenericAST)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder)
 import Html.Events exposing (keyCode, on, onClick, onInput)
@@ -46,7 +46,7 @@ viewBottom model =
 -- HELPERS
 
 
-viewAST : AST -> Html msg
+viewAST : GenericAST -> Html msg
 viewAST ast =
     div [ class "tree-container" ]
         [ Tree.drawTree ast ]

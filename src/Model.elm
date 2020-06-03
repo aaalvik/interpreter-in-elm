@@ -1,11 +1,11 @@
 module Model exposing (Model, init)
 
-import Data.ASTState exposing (ASTState)
+import Data.GenericASTState exposing (GenericASTState)
 import Msg exposing (Msg)
 
 
 type alias Model =
-    { asts : Maybe ASTState
+    { asts : Maybe GenericASTState
     , exprStr : String
     }
 

@@ -1,5 +1,6 @@
 module Update exposing (update)
 
+import Data.AST as AST
 import Data.GenericAST exposing (GenericAST)
 import Data.GenericASTState as GenericASTState exposing (GenericASTState)
 import Model exposing (Model)
@@ -22,11 +23,12 @@ update msg model =
                     Parser.parse model.exprStr
 
                 genericParseResult =
-                    Maybe.map Parser.toGeneric parseResult
+                    Result.map AST.toGeneric parseResult
             in
             ( { model
                 | asts =
                     genericParseResult
+                        |> Result.toMaybe
                         |> Maybe.map (\ast -> GenericASTState ast [] [])
               }
             , Cmd.none
@@ -44,7 +46,8 @@ update msg model =
                     | asts =
                         model.exprStr
                             |> Parser.parse
-                            |> Maybe.map Parser.toGeneric
+                            |> Result.toMaybe
+                            |> Maybe.map AST.toGeneric
                             |> Maybe.map (\ast -> GenericASTState ast [] [])
                   }
                 , Cmd.none

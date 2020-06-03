@@ -1,16 +1,19 @@
-module Parser.Parser exposing (parse, toGeneric)
+module Parser.Parser exposing (parse)
 
 import Data.AST exposing (AST(..))
-import Data.GenericAST exposing (Children(..), GenericAST)
+import Parser exposing ((|.), (|=), Parser)
 
 
-parse : String -> Maybe AST
+parse : String -> Result (List Parser.DeadEnd) AST
 parse expr =
-    Nothing
+    Parser.run parser expr
 
 
-toGeneric : AST -> GenericAST
-toGeneric ast =
-    case ast of
-        Sant ->
-            GenericAST "Sant" (Children [])
+parser : Parser AST
+parser =
+    Parser.oneOf
+        [ Parser.succeed Sant
+            |. Parser.keyword "sant"
+        , Parser.succeed Usant
+            |. Parser.keyword "usant"
+        ]

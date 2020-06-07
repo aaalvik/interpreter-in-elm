@@ -1,40 +1,57 @@
 module View exposing (view)
 
 import Data.GenericAST exposing (GenericAST)
-import Html exposing (..)
-import Html.Attributes exposing (class, placeholder)
-import Html.Events exposing (keyCode, on, onClick, onInput)
+import Html as Unstyled
+import Html.Attributes as Unstyled
+import Html.Events as Unstyled exposing (keyCode, on, onClick, onInput)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes as Attributes exposing (class, placeholder)
+import Html.Styled.Events as Events
 import Json.Decode as Json
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import View.Tree as Tree
 
 
-view : Model -> Html Msg
+view : Model -> Html.Html Msg
 view model =
-    div [ class "page" ]
-        [ div [ class "content" ]
-            [ div [ class "top-container" ] viewTop
+    Html.div
+        [ Attributes.class "page"
+        ]
+        [ Html.div [ Attributes.class "content" ]
+            [ Html.div [ Attributes.class "top-container" ] viewTop
             , viewBottom model
             ]
         ]
 
 
-viewTop : List (Html Msg)
+viewTop : List (Html.Html Msg)
 viewTop =
-    [ div [ class "input-container" ]
-        [ textInput "Skriv uttrykk her" "expr-input" KeyDown SetExprStr ]
-    , div [ class "buttons" ]
-        [ button [ class "button btn", onClick ParseStr ] [ text "Parse" ]
-        , button [ class "button btn", onClick PreviousState ] [ text "Forrige" ]
-        , button [ class "button btn", onClick NextState ] [ text "Neste" ]
+    [ Html.div [ Attributes.class "input-container" ]
+        [ textInput KeyDown SetExprStr ]
+    , Html.div [ Attributes.class "buttons" ]
+        [ Html.button
+            [ Attributes.class "button btn"
+            , Events.onClick ParseStr
+            ]
+            [ Html.text "Parse" ]
+        , Html.button
+            [ Attributes.class "button btn"
+            , Events.onClick PreviousState
+            ]
+            [ Html.text "Forrige" ]
+        , Html.button
+            [ Attributes.class "button btn"
+            , Events.onClick NextState
+            ]
+            [ Html.text "Neste" ]
         ]
     ]
 
 
-viewBottom : Model -> Html Msg
+viewBottom : Model -> Html.Html Msg
 viewBottom model =
-    div [ class "ast-container" ]
+    Html.div [ Attributes.class "ast-container" ]
         [ viewLeftMenu
         , model.asts
             |> Maybe.map (viewAST << .current)
@@ -46,10 +63,11 @@ viewBottom model =
 -- HELPERS
 
 
-viewAST : GenericAST -> Html msg
+viewAST : GenericAST -> Html.Html msg
 viewAST ast =
-    div [ class "tree-container" ]
-        [ Tree.drawTree ast ]
+    Html.fromUnstyled <|
+        Unstyled.div [ Unstyled.class "tree-container" ]
+            [ Tree.drawTree ast ]
 
 
 viewLeftMenu : Html msg
@@ -68,17 +86,18 @@ viewLeftMenu =
         ]
 
 
-textInput : String -> String -> (Int -> msg) -> (String -> msg) -> Html msg
-textInput str className keyDown msg =
-    input
-        [ class <| "input " ++ className
-        , placeholder str
-        , onInput msg
-        , onKeyDown keyDown
-        ]
-        []
+textInput : (Int -> msg) -> (String -> msg) -> Html.Html msg
+textInput keyDown msg =
+    Html.fromUnstyled <|
+        Unstyled.input
+            [ Unstyled.class "input expr-input"
+            , Unstyled.placeholder "Skriv uttrykk her"
+            , Unstyled.onInput msg
+            , onKeyDown keyDown
+            ]
+            []
 
 
-onKeyDown : (Int -> msg) -> Attribute msg
+onKeyDown : (Int -> msg) -> Unstyled.Attribute msg
 onKeyDown tagger =
-    on "keydown" (Json.map tagger keyCode)
+    Unstyled.on "keydown" (Json.map tagger keyCode)

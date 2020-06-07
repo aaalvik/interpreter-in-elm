@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import Html.Styled as Html
 import Http exposing (Error(..))
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -16,7 +17,7 @@ main =
         , view =
             \m ->
                 { title = "Simple interpreter"
-                , body = [ View.view m ]
+                , body = [ Html.toUnstyled <| View.view m ]
                 }
         , subscriptions = \_ -> Sub.none
         }

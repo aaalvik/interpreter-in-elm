@@ -32,7 +32,7 @@ viewTop =
     , Html.div [ Attributes.class "buttons" ]
         [ Html.button
             [ Attributes.class "button btn"
-            , Events.onClick ParseStr
+            , Events.onClick ParseAndEvaluateStr
             ]
             [ Html.text "Parse" ]
         , Html.button
@@ -75,12 +75,12 @@ viewLeftMenu =
     div [ class "left-menu" ] <|
         [ div [ class "grammar-container" ]
             [ strong [] [ text "Grammatikk: " ]
-            , p [ class "code-font" ] [ text "S -> * S S" ]
+            , p [ class "code-font" ] [ text "S -> sant" ]
             , ul [ class "grammar-list code-font" ]
-                [ li [] [ text "| + S S" ]
-                , li [] [ text "| - S" ]
-                , li [] [ text "| if S then S else S" ]
-                , li [] [ text "| number" ]
+                [ li [] [ text "| usant" ]
+                , li [] [ text "| ikke S" ]
+                , li [] [ text "| og S S" ]
+                , li [] [ text "| eller S S" ]
                 ]
             ]
         ]

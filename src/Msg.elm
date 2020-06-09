@@ -3,7 +3,7 @@ module Msg exposing (Msg(..))
 
 type Msg
     = SetExprStr String
-    | ParseStr
+    | ParseAndEvaluateStr
     | NextState
     | PreviousState
     | KeyDown Int

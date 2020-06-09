@@ -1,12 +1,13 @@
-module Parser.Parser exposing (parse)
+module Interpreter.Parser exposing (parse)
 
 import Data.AST exposing (AST(..))
 import Parser exposing ((|.), (|=), Parser)
 
 
-parse : String -> Result (List Parser.DeadEnd) AST
+parse : String -> Maybe AST
 parse expr =
     Parser.run parser expr
+        |> Result.toMaybe
 
 
 parser : Parser AST

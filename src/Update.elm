@@ -3,9 +3,11 @@ module Update exposing (update)
 import Data.AST as AST
 import Data.GenericAST exposing (GenericAST)
 import Data.GenericASTState as GenericASTState exposing (GenericASTState)
+import Interpreter.Evaluator as Evaluator
+import Interpreter.Parser as Parser
+import List.Nonempty as Nonempty exposing (Nonempty)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Parser.Parser as Parser
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -16,20 +18,17 @@ update msg model =
             , Cmd.none
             )
 
-        ParseStr ->
+        ParseAndEvaluateStr ->
             let
-                -- TODO: Put regular parse tree in model
-                parseResult =
-                    Parser.parse model.exprStr
-
-                genericParseResult =
-                    Result.map AST.toGeneric parseResult
+                genericASTState =
+                    model.exprStr
+                        |> Parser.parse
+                        |> Maybe.map Evaluator.evaluate
+                        |> Maybe.map (Nonempty.map AST.toGeneric)
+                        |> Maybe.map toGenericASTState
             in
             ( { model
-                | asts =
-                    genericParseResult
-                        |> Result.toMaybe
-                        |> Maybe.map (\ast -> GenericASTState ast [] [])
+                | asts = genericASTState
               }
             , Cmd.none
             )
@@ -42,13 +41,16 @@ update msg model =
 
         KeyDown key ->
             if key == 13 then
-                ( { model
-                    | asts =
+                let
+                    genericASTState =
                         model.exprStr
                             |> Parser.parse
-                            |> Result.toMaybe
-                            |> Maybe.map AST.toGeneric
-                            |> Maybe.map (\ast -> GenericASTState ast [] [])
+                            |> Maybe.map Evaluator.evaluate
+                            |> Maybe.map (Nonempty.map AST.toGeneric)
+                            |> Maybe.map toGenericASTState
+                in
+                ( { model
+                    | asts = genericASTState
                   }
                 , Cmd.none
                 )
@@ -57,23 +59,13 @@ update msg model =
                 ( model, Cmd.none )
 
 
-resetInput : Model -> Model
-resetInput model =
-    { model | exprStr = "", asts = Nothing }
-
-
-setASTS : Maybe GenericASTState -> Model -> Model
-setASTS newASTs model =
-    { model | asts = newASTs }
-
-
-updateASTS : GenericAST -> List GenericAST -> Model -> Model
-updateASTS ast next model =
+toGenericASTState : Nonempty GenericAST -> GenericASTState
+toGenericASTState asts =
     let
-        newASTS =
-            { current = ast
-            , next = next
-            , prev = []
-            }
+        first =
+            Nonempty.head asts
+
+        rest =
+            Nonempty.tail asts
     in
-    { model | asts = Just newASTS }
+    GenericASTState first [] rest

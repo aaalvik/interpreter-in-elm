@@ -3,8 +3,8 @@ module TestParser exposing (unitTest)
 import Data.AST exposing (AST(..))
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
+import Interpreter.Parser as Parser
 import Main exposing (..)
-import Parser.Parser as Parser
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (tag, text)
@@ -19,10 +19,15 @@ unitTest =
             \_ ->
                 "sant"
                     |> Parser.parse
-                    |> Expect.equal (Ok Sant)
+                    |> Expect.equal (Just Sant)
         , test "Parse usant" <|
             \_ ->
                 "usant"
                     |> Parser.parse
-                    |> Expect.equal (Ok Usant)
+                    |> Expect.equal (Just Usant)
+        , test "Parse _eller ikke sant usant_" <|
+            \_ ->
+                "eller ikke sant usant"
+                    |> Parser.parse
+                    |> Expect.equal (Just <| Eller (Ikke Sant) Usant)
         ]

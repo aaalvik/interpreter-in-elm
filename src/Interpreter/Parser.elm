@@ -17,9 +17,9 @@ parser =
             |. Parser.keyword "sant"
         , Parser.succeed Usant
             |. Parser.keyword "usant"
-        , ikkeParser
-        , ogParser
-        , ellerParser
+        , Parser.lazy (\_ -> ogParser)
+        , Parser.lazy (\_ -> ellerParser)
+        , Parser.lazy (\_ -> ikkeParser)
         ]
 
 

@@ -56,11 +56,11 @@ takeOneStep ast =
         Eller ast1 ast2 ->
             -- hvis ast1 ikke er ferdig, ta ett steg på den
             if not <| isValue ast1 then
-                Og (takeOneStep ast1) ast2
+                Eller (takeOneStep ast1) ast2
                 -- hvis ast1 er ferdig, og ast2 ikke er det
 
             else if not <| isValue ast2 then
-                Og ast1 (takeOneStep ast2)
+                Eller ast1 (takeOneStep ast2)
                 -- begge to er ferdig
 
             else

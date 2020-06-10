@@ -6,7 +6,13 @@ import Parser exposing ((|.), (|=), Parser)
 
 parse : String -> Maybe AST
 parse expr =
-    Parser.run parser expr
+    let
+        topLevelParser =
+            Parser.succeed identity
+                |= parser
+                |. Parser.end
+    in
+    Parser.run topLevelParser expr
         |> Result.toMaybe
 
 
@@ -29,7 +35,6 @@ ikkeParser =
         |. Parser.keyword "ikke"
         |. Parser.spaces
         |= Parser.lazy (\_ -> parser)
-        |. Parser.end
 
 
 ogParser : Parser AST
@@ -40,7 +45,6 @@ ogParser =
         |= Parser.lazy (\_ -> parser)
         |. Parser.spaces
         |= Parser.lazy (\_ -> parser)
-        |. Parser.end
 
 
 ellerParser : Parser AST
@@ -51,4 +55,3 @@ ellerParser =
         |= Parser.lazy (\_ -> parser)
         |. Parser.spaces
         |= Parser.lazy (\_ -> parser)
-        |. Parser.end

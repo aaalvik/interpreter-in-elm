@@ -20,7 +20,7 @@ update msg model =
 
         ParseAndEvaluateStr ->
             let
-                genericASTState =
+                asts =
                     model.exprStr
                         |> Parser.parse
                         |> Maybe.map Evaluator.evaluate
@@ -28,7 +28,8 @@ update msg model =
                         |> Maybe.map toGenericASTState
             in
             ( { model
-                | asts = genericASTState
+                | asts = asts
+                , parseButtonClicked = True
               }
             , Cmd.none
             )
@@ -42,7 +43,7 @@ update msg model =
         KeyDown key ->
             if key == 13 then
                 let
-                    genericASTState =
+                    asts =
                         model.exprStr
                             |> Parser.parse
                             |> Maybe.map Evaluator.evaluate
@@ -50,7 +51,8 @@ update msg model =
                             |> Maybe.map toGenericASTState
                 in
                 ( { model
-                    | asts = genericASTState
+                    | asts = asts
+                    , parseButtonClicked = True
                   }
                 , Cmd.none
                 )

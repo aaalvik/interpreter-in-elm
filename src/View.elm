@@ -55,7 +55,13 @@ viewBottom model =
         [ viewLeftMenu
         , model.asts
             |> Maybe.map (viewAST << .current)
-            |> Maybe.withDefault (text "Ugyldig")
+            |> Maybe.withDefault
+                (if model.parseButtonClicked then
+                    text "Ugyldig"
+
+                 else
+                    text ""
+                )
         ]
 
 

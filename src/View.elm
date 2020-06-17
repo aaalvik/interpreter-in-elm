@@ -52,8 +52,8 @@ viewTop =
 viewBottom : Model -> Html.Html Msg
 viewBottom model =
     Html.div [ Attributes.class "ast-container" ]
-        [ viewLeftMenu
-        , model.asts
+        [ --viewLeftMenu
+          model.asts
             |> Maybe.map (viewAST << .current)
             |> Maybe.withDefault
                 (if model.parseButtonClicked then
